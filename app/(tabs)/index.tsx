@@ -1,74 +1,96 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    // Clear AsyncStorage when the component is mounted
+    AsyncStorage.clear()
+      .then(() => {
+        console.log('AsyncStorage has been cleared');
+      })
+      .catch((error) => {
+        console.error('Error clearing AsyncStorage', error);
+      });
+  }, []); // Empty dependency array ensures it runs only once when the component mounts
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      {/* Header */}
+      <Text style={styles.title}>Welcome to DailyVita</Text>
+      <Text style={styles.subtitle}>
+        Hello, we are here to make your life healthier and happier
+      </Text>
+
+      {/* Illustration */}
+      <Image
+        source={require('@/assets/images/first-page.png')}
+        style={styles.illustration}
+        resizeMode="contain"
+      />
+
+      {/* Description */}
+      <Text style={styles.description}>
+        We will ask a couple of questions to better understand your vitamin needs.
+      </Text>
+
+      {/* Get Started Button */}
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={() => navigation.navigate('HealthConcerns')}
+      >
+        <Text style={styles.buttonText}>Get started</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    padding: 20,
+    backgroundColor: '#77e6b9',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 50,
+    textAlign: 'left',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'left',
+    marginVertical: 10,
+  },
+  illustration: {
+    height: 200,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  description: {
+    fontSize: 14,
+    color: '#444',
+    textAlign: 'left',
+    marginVertical: 20,
+  },
+  button: {
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    alignSelf: 'center',
+    marginBottom: 50,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFF',
   },
 });

@@ -1,45 +1,86 @@
-import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; // Import Tab Navigator
+import { useColorScheme } from '@/hooks/useColorScheme';  // Assuming this hook is correctly imported
+import { HapticTab } from '@/components/HapticTab';  // Custom tab button component
+import { IconSymbol } from '@/components/ui/IconSymbol';  // Icon component
+import { Colors } from '@/constants/Colors';  // Your color constants
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// Import the screens directly from the same 'tabs' folder
+import index from './index';  // Adjusted import path
+import HealthConcernsScreen from './HealthConcernsScreen';  // Adjusted import path
+import DietScreen from './diet';  // Adjusted import path
+import AllergiesScreen from './allergies';  // Adjusted import path
+import LastPageScreen from './lastpage';  // Adjusted import path
 
-export default function TabLayout() {
+const Tab = createBottomTabNavigator();  // Create Tab Navigator
+
+const TabLayout = () => {
   const colorScheme = useColorScheme();
 
   return (
-    <Tabs
+    <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
+        tabBarButton: (props) => <HapticTab {...props} />,  // Custom tab button
         tabBarStyle: Platform.select({
           ios: {
-            // Use a transparent background on iOS to show the blur effect
+            display: 'none',
             position: 'absolute',
           },
-          default: {},
+          default: { display: 'none' },
         }),
       }}>
-      <Tabs.Screen
+      <Tab.Screen
         name="index"
+        component={index}  // Use the Health Concerns Screen
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'index',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="heart.fill" color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="explore"
+      {/* Health Concerns Tab */}
+      <Tab.Screen
+        name="HealthConcerns"
+        component={HealthConcernsScreen}  // Use the Health Concerns Screen
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Health Concerns',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="heart.fill" color={color} />,
         }}
       />
-    </Tabs>
+      
+      {/* Diet Tab */}
+      <Tab.Screen
+        name="Diet"
+        component={DietScreen}  // Use the Diet Screen
+        options={{
+          title: 'Diet',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="leaf.fill" color={color} />,
+        }}
+      />
+
+      {/* Allergies Tab */}
+      <Tab.Screen
+        name="Allergies"
+        component={AllergiesScreen}  // Use the Allergies Screen
+        options={{
+          title: 'Allergies',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="exclamationmark.triangle.fill" color={color} />,
+        }}
+      />
+      
+      {/* Last Page Tab */}
+      <Tab.Screen
+        name="LastPage"
+        component={LastPageScreen}  // Use the Last Page Screen
+        options={{
+          title: 'Last Page',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="checkmark.circle.fill" color={color} />,
+        }}
+      />
+    </Tab.Navigator>
   );
-}
+};
+
+export default TabLayout;
